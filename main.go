@@ -34,6 +34,39 @@ func realMain() int {
 		log.Println("Name:", p.Name())
 		log.Println("Version:", p.Version())
 	}
+	action := os.Args[1]
+
+	switch action {
+	case "start":
+		startProviders(providers)
+	case "stop":
+		stopProviders(providers)
+	case "terminate":
+		terminateProviders(providers)
+	default:
+		log.Println("Action not recognised")
+	}
 
 	return 0
+}
+
+func startProviders(providers []*provider.Provider) {
+	for idx, provider := range providers {
+		log.Printf("(%d/%d) Start signal sent to %s", idx+1, len(providers), provider.Name())
+		provider.Start()
+	}
+}
+
+func stopProviders(providers []*provider.Provider) {
+	for idx, provider := range providers {
+		log.Printf("(%d/%d) Stop signal sent to %s", idx+1, len(providers), provider.Name())
+		provider.Stop()
+	}
+}
+
+func terminateProviders(providers []*provider.Provider) {
+	for idx, provider := range providers {
+		log.Printf("(%d/%d) Terminate signal sent to %s", idx+1, len(providers), provider.Name())
+		provider.Terminate()
+	}
 }
