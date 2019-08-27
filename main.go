@@ -34,6 +34,11 @@ func realMain() int {
 		log.Println("Name:", p.Name())
 		log.Println("Version:", p.Version())
 	}
+
+	if len(os.Args) < 2 {
+		log.Fatalln("No action was provided")
+	}
+
 	action := os.Args[1]
 
 	switch action {
