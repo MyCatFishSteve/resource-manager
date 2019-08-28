@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 )
 
+// Returns the configuration directory
 func configDir() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -15,7 +16,7 @@ func configDir() string {
 	return filepath.Join(home, ".resource-manager.d")
 }
 
-// Return the default plugin directory
+// Return the plugin directory
 func pluginDir() string {
 	return filepath.Join(configDir(), "plugins")
 }

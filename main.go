@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/immediate-media/resource-manager/plugin"
-	"github.com/immediate-media/resource-manager/provider"
 	"log"
 	"os"
+
+	"github.com/immediate-media/resource-manager/plugin"
+	"github.com/immediate-media/resource-manager/provider"
 )
 
-// Ensure required resources exist
+// Create required resources
 func init() {
 	createDirs()
 }
@@ -19,12 +20,14 @@ func main() {
 
 func realMain() int {
 	plugins := plugin.LoadPluginDir(pluginDir())
-	var providers []*provider.Provider
+	var providers []provider.Provider
 
+	// Iterate through the slice of loaded plugins and load them
+	// as providers
 	for _, plugin := range plugins {
 		provider, err := provider.LoadProvider(plugin.Plugin)
 		if err != nil {
-			log.Fatalln("[ERROR]", err.Error(), "from", plugin.FileName)
+			log.Fatalln("[ERROR]", err.Error(), "from", plugin.Name)
 		}
 
 		providers = append(providers, provider)
@@ -41,37 +44,14 @@ func realMain() int {
 
 	action := os.Args[1]
 
-	switch action {
-	case "start":
-		startProviders(providers)
-	case "stop":
-		stopProviders(providers)
-	case "terminate":
-		terminateProviders(providers)
-	default:
-		log.Println("Action not recognised")
-	}
+	actionProviders(action, providers)
 
 	return 0
 }
 
-func startProviders(providers []*provider.Provider) {
+func actionProviders(action string, providers []provider.Provider) {
 	for idx, provider := range providers {
-		log.Printf("(%d/%d) Start signal sent to %s", idx+1, len(providers), provider.Name())
-		provider.Start()
-	}
-}
-
-func stopProviders(providers []*provider.Provider) {
-	for idx, provider := range providers {
-		log.Printf("(%d/%d) Stop signal sent to %s", idx+1, len(providers), provider.Name())
-		provider.Stop()
-	}
-}
-
-func terminateProviders(providers []*provider.Provider) {
-	for idx, provider := range providers {
-		log.Printf("(%d/%d) Terminate signal sent to %s", idx+1, len(providers), provider.Name())
-		provider.Terminate()
+		log.Printf("(%d/%d) %s signal sent to %s", idx+1, len(providers), action, provider.Name())
+		provider.Action(action)
 	}
 }
