@@ -47,6 +47,7 @@ func realMain() int {
 		for _, action := range supportedActions {
 			log.Println("*", action)
 		}
+		return 1
 	}
 
 	action := os.Args[1]
