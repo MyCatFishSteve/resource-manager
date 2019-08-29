@@ -40,7 +40,7 @@ func realMain() int {
 		providers = append(providers, provider)
 	}
 
-	log.Println(len(providers), "loaded into program.")
+	log.Println(len(providers), "providers loaded..")
 
 	if len(os.Args) < 2 {
 		log.Println("No action supplied, available actions:")
