@@ -8,6 +8,14 @@ import (
 	"github.com/immediate-media/resource-manager/provider"
 )
 
+var (
+	supportedActions = []string{
+		"start",
+		"stop",
+		"terminate",
+	}
+)
+
 // Create required resources
 func init() {
 	createDirs()
@@ -22,8 +30,7 @@ func realMain() int {
 	plugins := plugin.LoadPluginDir(pluginDir())
 	var providers []provider.Provider
 
-	// Iterate through the slice of loaded plugins and load them
-	// as providers
+	// Load plugins as providers and add them to providers slice
 	for _, plugin := range plugins {
 		provider, err := provider.LoadProvider(plugin.Plugin)
 		if err != nil {
@@ -33,13 +40,13 @@ func realMain() int {
 		providers = append(providers, provider)
 	}
 
-	for _, p := range providers {
-		log.Println("Name:", p.Name())
-		log.Println("Version:", p.Version())
-	}
+	log.Println(len(providers), "loaded into program.")
 
 	if len(os.Args) < 2 {
-		log.Fatalln("No action was provided")
+		log.Println("No action supplied, available actions:")
+		for _, action := range supportedActions {
+			log.Println("*", action)
+		}
 	}
 
 	action := os.Args[1]
